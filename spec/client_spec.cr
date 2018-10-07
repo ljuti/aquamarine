@@ -13,11 +13,11 @@ module Aquamarine
       expect(client.publish(TestEvent.new)).to eq(client)
     end
 
-    it "returns self when an event is appended to a stream" do
+    pending "returns self when an event is appended to a stream" do
       expect(client.append(TestEvent.new, stream_name: stream)).to eq(client)
     end
 
-    it "appends the event to the default stream if stream is not specified" do
+    pending "appends the event to the default stream if stream is not specified" do
       expect(client.append(test_event = TestEvent.new)).to eq(client)
       expect(client.read.all).to be_a(Array(Aquamarine::Event | Aquamarine::SerializedRecord))
       expect(client.read.all).to eq([test_event])
@@ -41,8 +41,7 @@ module Aquamarine
         let(repository) { Aquamarine::InMemoryRepository.new }
         let(client) { described_class.new(repository: repository) }
 
-        it "reads an event with specific ID from the repository" do
-          puts event.event_type
+        pending "reads an event with specific ID from the repository" do
           expect(client.read_event(event.event_id)).to eq(event)
         end
       end

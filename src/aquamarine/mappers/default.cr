@@ -12,20 +12,18 @@ module Aquamarine
       def event_to_serialized_record(event : Aquamarine::Event)
         SerializedRecord.new(
           event_id: event.event_id,
-          # metadata: @serializer.dump(event.metadata),
-          metadata: "metadata-string",
+          metadata: @serializer.dump(event.metadata),
           data: @serializer.dump(event.data),
           event_type: event.type
         )
       end
 
       def serialized_record_to_event(record : Aquamarine::Event | Aquamarine::SerializedRecord)
-        # Aquamarine::Event.new(
-        #   event_id: record.event_id,
-        #   metadata: Metadata.new(@serializer.parse(record.metadata).as_h),
-        #   data: @serializer.parse(record.data).as_h
-        # )
-        Aquamarine::Event.new
+        Aquamarine::Event.new(
+          event_id: record.event_id,
+          data: Aquamarine::Event::Data.from_yaml(record.data),
+          metadata: Aquamarine::Event::Metadata.from_yaml(record.metadata)
+        )
       end
     end
   end
