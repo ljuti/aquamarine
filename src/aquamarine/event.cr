@@ -3,16 +3,21 @@ require "uuid"
 module Aquamarine
 
   # Event is a data structure representing an event in the domain.
-  class Event
+  struct Event
     getter event_id : UUID
-    getter data
+    getter data : Hash(Symbol, Int32 | String)
+    getter metadata : Aquamarine::Metadata
+    getter event_type : String
 
     # Instantiates a new event.
     #
-    # @param metadata [String] Event metadata that is not part of the domain
-    # @param data [Tuple] Event data that belongs to the application domain
+    # @param metadata [Hash] Event metadata that is not part of the domain
+    # @param data [Hash] Event data that belongs to the application domain
     # @return [Event]
-    def initialize(@event_id = UUID.random)
+    def initialize(@event_id = UUID.random, metadata : (Hash(K, V), K -> V)? = nil, data : (Hash(K, V), K -> V)? = nil)
+      @metadata = Metadata.new(processed_metadata(metadata))
+      @data = processed_data(data)
+      @event_type = self.class.name
     end
 
     # Type of the event
@@ -33,9 +38,19 @@ module Aquamarine
     # @param event [Event] Event object to compare
     # @return [Bool]
     def ==(event)
-      event.instance_of?(self.class) &&
-        event.event_id.eql?(event_id) &&
-        event.data.eql?(data)
+      event.class.name === self.class.name &&
+        event.event_id === event_id &&
+        event.data === data
+    end
+
+    def processed_metadata(input)
+      return Hash(Symbol, Int32 | String).new if input.nil?
+      return input.to_h
+    end
+
+    def processed_data(input)
+      return Hash(Symbol, Int32 | String).new if input.nil?
+      return input.to_h
     end
   end
 end
