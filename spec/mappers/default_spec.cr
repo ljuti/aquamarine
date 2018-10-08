@@ -37,12 +37,26 @@ module Aquamarine
             )
           end
 
+          let(record2) do
+            Aquamarine::SerializedRecord.new(
+              event_id: event_id,
+              data: "---\ndata:\n  foo: bar\n",
+              metadata: "---\ndata:\n  meta: data\n",
+              event_type: "Aquamarine::Event"
+            )
+          end
+
           subject { mapper.serialized_record_to_event(record) }
 
           it "deserializes a record to an event" do
             expect(subject).to eq(event)
             expect(subject.data.foo).to eq("bar")
             expect(subject.metadata.meta).to eq("data")
+
+            obj = mapper.serialized_record_to_event(record2)
+            expect(obj).to be_a(Aquamarine::Event)
+            expect(obj.data.foo).to eq("bar")
+            expect(obj.metadata.meta).to eq("data")
           end
         end
       end

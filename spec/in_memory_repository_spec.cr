@@ -13,7 +13,12 @@ module Aquamarine
 
     describe "#append" do
       let(repo) { described_class.new }
-      let(event) { Aquamarine::Event.new }
+      let(event) { Aquamarine::SerializedRecord.new(
+        event_id: UUID.random,
+        data: "",
+        metadata: "",
+        event_type: "Aquamarine::Event"
+      ) }
       let(stream) { Aquamarine::Stream.new("river") }
 
       context "Global stream" do
@@ -58,6 +63,33 @@ module Aquamarine
 
     describe "#stream_of" do
 
+    end
+
+    describe "#read_event" do
+      let(event) { Aquamarine::Event.new }
+      let(record) do
+        Aquamarine::SerializedRecord.new(event_id: event.event_id,
+          data: "",
+          metadata: "",
+          event_type: "Aquamarine::Event"
+        )
+      end
+      let(repo) { described_class.new }
+      let(stream) { Aquamarine::Stream.new("default") }
+
+      subject { repo.read_event(event.event_id) }
+
+      it "reads an event from the repository" do
+        repo.append(record, stream, true)
+        expect(subject).to eq(record)
+        expect(typeof(subject)).to eq(Aquamarine::SerializedRecord)
+      end
+
+      it "raises an exception if an event with given UUID is not found" do
+        expect do
+          repo.read_event(record.event_id)
+        end.to raise_error(EventNotFoundError)
+      end
     end
   end
 end

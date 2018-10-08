@@ -9,7 +9,7 @@ module Aquamarine
     def initialize
       @streams = Hash(Symbol | String | UUID, Array(Aquamarine::Event | Aquamarine::SerializedRecord)).new
       @mutex = Mutex.new
-      @global = Array(Aquamarine::Event | Aquamarine::SerializedRecord).new
+      @global = Array(Aquamarine::SerializedRecord).new
     end
 
     def read(query)
@@ -22,6 +22,17 @@ module Aquamarine
 
     def append_to_stream(event, stream)
       add_to_stream(event, stream, true)
+    end
+
+    def append_to_stream(events : Array(Aquamarine::SerializedRecord), stream)
+      events.map do |event|
+        add_to_stream(event, stream, true)
+      end
+    end
+
+    def link_to_stream(event_ids : Array(UUID), stream)
+      events = normalize_to_array(event_ids).map { |eid| read_event(eid) }
+      add_to_stream(events, stream, true)
     end
 
     def add_to_stream(event, stream, include_global)
@@ -54,8 +65,10 @@ module Aquamarine
       @streams.delete(stream.name)
     end
 
-    def read_event(event_id)
-      @global.find {|event| event_id == event.event_id } || raise EventNotFoundError.new("Event #{event_id} not found.")
+    def read_event(event_id : UUID)
+      result = @global.find {|event| event_id == event.event_id }
+      raise EventNotFoundError.new("Event #{event_id} not found.") if result.nil?
+      result
     end
   end
 
