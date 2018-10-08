@@ -29,7 +29,7 @@ module Aquamarine
     end
 
     def read()
-      Query.new(QueryReader.new(@repository))
+      Query.new(QueryReader.new(@repository, @mapper))
     end
 
     def read_event(event_id : UUID)

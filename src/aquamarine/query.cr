@@ -1,6 +1,9 @@
 module Aquamarine
   class Query
     include Enumerable(Aquamarine::Event)
+
+    DEFAULT_BATCH_SIZE = 100
+    
     getter result
 
     def initialize(@reader : Aquamarine::QueryReader, @result = Aquamarine::QueryResult.new)

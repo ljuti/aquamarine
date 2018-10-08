@@ -4,12 +4,13 @@ module Aquamarine
     property read_as : Symbol
     getter stream
 
-    def initialize(direction = :forward,
-        stream = Aquamarine::Stream.new(GLOBAL_STREAM)
+    def initialize(@direction = :forward,
+        @start = :head,
+        @count : Int32? = nil,
+        @stream = Aquamarine::Stream.new(GLOBAL_STREAM),
+        @read_as = :all,
+        @batch_size = Query::DEFAULT_BATCH_SIZE
       )
-      @batch_size = 100
-      @read_as = :all
-      @stream = stream
     end
   end
 end

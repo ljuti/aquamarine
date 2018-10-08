@@ -4,7 +4,8 @@ module Aquamarine
 
   Spec2.describe Query do
     describe "Initializing a query" do
-      let(reader) { Aquamarine::QueryReader.new(Aquamarine::InMemoryRepository.new()) }
+      let(mapper) { Aquamarine::Mappers::Default.new() }
+      let(reader) { Aquamarine::QueryReader.new(Aquamarine::InMemoryRepository.new(), mapper) }
       let(result) { Aquamarine::QueryResult.new() }
 
       it "will initialize when given proper arguments" do
