@@ -1,20 +1,22 @@
-require "spec2"
+require "./spec_helper"
 
 module Aquamarine
-
-  Spec2.describe Query do
+  describe Query do
+    described_class = Aquamarine::Query
+    
     describe "Initializing a query" do
-      let(mapper) { Aquamarine::Mappers::Default.new() }
-      let(reader) { Aquamarine::QueryReader.new(Aquamarine::InMemoryRepository.new(), mapper) }
-      let(result) { Aquamarine::QueryResult.new() }
+      mapper = Aquamarine::Mappers::Default.new()
+      reader = Aquamarine::QueryReader.new(Aquamarine::InMemoryRepository.new(), mapper)
+      result = Aquamarine::QueryResult.new()
 
       it "will initialize when given proper arguments" do
         query = described_class.new(reader, result)
-        expect(query).to be_true
+        query.should be_a(Aquamarine::Query)
       end
     end
 
-    
+    describe "Scoping query to a stream" do
+      
+    end
   end
-
 end

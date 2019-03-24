@@ -1,16 +1,16 @@
-require "spec2"
-require "../src/aquamarine"
+require "./spec_helper"
 
 module Aquamarine
-  Spec2.describe QueryReader do
-    describe "Initialization" do
-      let(repo) { Aquamarine::InMemoryRepository.new }
-      let(mapper) { Aquamarine::Mappers::Default.new }
+  describe QueryReader do
+    described_class = Aquamarine::QueryReader
 
-      subject { described_class.new(repo, mapper) }
-      
+    describe "Initialization" do
+      repo = Aquamarine::InMemoryRepository.new
+      mapper = Aquamarine::Mappers::Default.new
+
       it "can be instantiated" do
-        expect(subject).to be_a(Aquamarine::QueryReader)
+        subject = described_class.new(repo, mapper)
+        subject.should be_a(Aquamarine::QueryReader)
       end
     end
 

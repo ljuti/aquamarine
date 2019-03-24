@@ -1,13 +1,13 @@
-require "spec2"
-require "../src/aquamarine"
+require "./spec_helper"
 
 module Aquamarine
-  Spec2.describe QueryResult do
-    describe "Initialization" do
-      subject { described_class.new }
+  describe QueryResult do
+    described_class = Aquamarine::QueryResult
 
+    describe "Initialization" do
       it "can be instantiated" do
-        expect(subject).to be_a(Aquamarine::QueryResult)
+        subject = described_class.new
+        subject.should be_a(Aquamarine::QueryResult)
       end
     end
 

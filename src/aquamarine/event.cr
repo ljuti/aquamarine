@@ -28,7 +28,7 @@ module Aquamarine
       end
 
       macro method_missing(call)
-        @data.fetch({{call.name.id.stringify}})
+        @data.fetch({{call.name.id.stringify}}, "")
       end
     end
 
